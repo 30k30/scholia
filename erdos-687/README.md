@@ -115,3 +115,7 @@ statement comparison, axiom check and kernel replay are unchanged.
 - K. Ford, B. Green, S. Konyagin, J. Maynard, T. Tao, *Long gaps between primes*, J. Amer. Math. Soc. 31 (2018), 65–105.
 - OpenAI, *A quadratic bound for Jacobsthal's function*, OpenAI Math Release preprint, 25 Sep 2026.
 - B. Green, *100 open problems*, Problem 46.
+
+### AI notice
+
+Works produced by HJ van Veen (@30k30), in collaboration with Claude Opus 5.5 extra, ChatGPT Sol 6.1 extra high, and Gemini 3 Pro. 
