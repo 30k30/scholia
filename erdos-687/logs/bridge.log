@@ -1,0 +1,3 @@
+'erdos_970_solved' depends on axioms: [propext, Classical.choice, Quot.sound]
+'erdos_687_little_o' depends on axioms: [propext, Classical.choice, Quot.sound]
+'green_46_improve_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
