@@ -48,13 +48,24 @@ definitions written out), and proves:
   copied verbatim, with answer $(x+1)^2/(\log\log 3(x+1))^2$;
 - `FC970.erdos_970_rhs`: the right-hand side of formal-conjectures' `erdos_970`, from the quadratic bound.
 
+`bridge/Erdos687/FormalConjectures.lean` restates these in exactly the form used in
+[formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
+(`ErdosProblems/687.lean`, `GreensOpenProblems/46.lean`), with the same definitions and
+declaration names: `erdos_687.parts.i`, `erdos_687.variants.upper_iterated_log` and
+`green_46.improve_upper`. Compiled inside a copy of formal-conjectures (with its own `answer()`
+elaborator, attributes and linters), each repository statement was checked to be the same term
+(`rfl`) as the statement proved here.
+
 `glue/JacobsthalTo687.lean` plugs in the release's theorems
-`OAI.Erdos970.Erdos970Final.erdos_970_iterated_log` and `erdos_970_quadratic`. Result
-(`logs/bridge.log`):
+`OAI.Erdos970.Erdos970Final.erdos_970_iterated_log` and `erdos_970_quadratic`, and proves all of
+the above unconditionally. Result (`logs/bridge.log`):
 
     'erdos_970_solved' depends on axioms: [propext, Classical.choice, Quot.sound]
     'erdos_687_little_o' depends on axioms: [propext, Classical.choice, Quot.sound]
     'green_46_improve_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+    'Erdos687.erdos_687.parts.i' depends on axioms: [propext, Classical.choice, Quot.sound]
+    'Erdos687.erdos_687.variants.upper_iterated_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+    'Green46.green_46.improve_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
 
 The release's own comparator challenges for item 021 also pass (`logs/comparator_*.log`):
 "Lean default kernel accepts the solution".
