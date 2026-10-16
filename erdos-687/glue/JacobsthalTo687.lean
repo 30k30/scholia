@@ -234,60 +234,46 @@ theorem improve_upper (hJ : JacobsthalIteratedLogStatement) :
   exact (h x).le
 
 end Green46
-/-! ## The formal-conjectures statements, exactly as they will appear in the repository
+/-! ## The formal-conjectures statements, exactly as they appear in the repository
 
-Definitions below are copied verbatim from formal-conjectures (`ErdosProblems/687.lean` and
-`GreensOpenProblems/46.lean`); `g ≪ f` there is notation for `Asymptotics.IsBigO atTop g f`,
-and `answer(True)` elaborates to `True`. Each statement is proved from the Jacobsthal
-hypothesis; the unconditional versions are in the glue file. -/
-
-namespace Erdos687
-
-open Asymptotics
-
-/-- Verbatim from formal-conjectures `ErdosProblems/687.lean`. -/
-def IsCoveredByResidues (x y : ℕ) : Prop :=
-  ∃ a : ℕ → ℕ, ∀ m ∈ Finset.Icc 1 y, ∃ p ≤ x, p.Prime ∧ m ≡ a p [MOD p]
-
-/-- Verbatim from formal-conjectures `ErdosProblems/687.lean`. -/
-noncomputable def Y (x : ℕ) : ℝ :=
-  ((sSup { y | IsCoveredByResidues x y } : ℕ) : ℝ)
-
-theorem Y_eq_maxY : Y = Green46.maxY := by
-  funext x
-  rfl
-
-/-- `erdos_687.parts.i`, from the Jacobsthal bound. -/
-theorem erdos_687.parts.i_of_jacobsthal (hJ : JacobsthalIteratedLogStatement) :
-    True ↔ Y =o[atTop] (fun x : ℕ ↦ (x : ℝ) ^ 2) := by
-  refine ⟨fun _ => ?_, fun _ => trivial⟩
-  obtain ⟨h1, h2⟩ := Green46.improve_upper hJ
-  rw [Y_eq_maxY]
-  exact h2.trans_isLittleO h1
-
-/-- `erdos_687.variants.upper_iterated_log`, from the Jacobsthal bound. -/
-theorem erdos_687.variants.upper_iterated_log_of_jacobsthal
-    (hJ : JacobsthalIteratedLogStatement) :
-    IsBigO atTop Y
-      (fun x : ℕ ↦ ((x : ℝ) + 1) ^ 2 / (Real.log (Real.log (3 * ((x : ℝ) + 1)))) ^ 2) := by
-  obtain ⟨-, h2⟩ := Green46.improve_upper hJ
-  rw [Y_eq_maxY]
-  exact h2
-
-end Erdos687
+Definitions below are copied verbatim from formal-conjectures: `GreensOpenProblems/46.lean`
+(as updated in PR #7183, using the repository's `<theorem>.answer` convention) and
+`ErdosProblems/687.lean` (as in PR #6864, by Daniel Veljjanoski). There `g ≪ f` is notation for
+`Asymptotics.IsBigO atTop g f`. Each statement is proved from the Jacobsthal hypothesis; the
+unconditional versions are in the glue file. -/
 
 namespace Green46
 
 open Asymptotics
 
-/-- `green_46.improve_upper` with the answer written as it appears in the repository. -/
+/-- Verbatim from formal-conjectures `GreensOpenProblems/46.lean` (PR #7183). -/
+noncomputable def green_46.improve_upper.answer : ℕ → ℝ :=
+  fun x : ℕ ↦ ((x : ℝ) + 1) ^ 2 / (Real.log (Real.log (3 * ((x : ℝ) + 1)))) ^ 2
+
+/-- `green_46.improve_upper`, from the Jacobsthal bound. -/
 theorem green_46.improve_upper_of_jacobsthal (hJ : JacobsthalIteratedLogStatement) :
-    let ans := ((fun x : ℕ ↦ ((x : ℝ) + 1) ^ 2 /
-      (Real.log (Real.log (3 * ((x : ℝ) + 1)))) ^ 2) : ℕ → ℝ)
-    (ans =o[atTop] bestUpper) ∧ (IsBigO atTop maxY ans) :=
-  Green46.improve_upper hJ
+    (green_46.improve_upper.answer =o[atTop] bestUpper) ∧
+      (IsBigO atTop maxY green_46.improve_upper.answer) := by
+  obtain ⟨h1, h2⟩ := Green46.improve_upper hJ
+  exact ⟨h1, h2⟩
 
 end Green46
+
+namespace Erdos687
+
+open Asymptotics
+
+/-- Verbatim from formal-conjectures `ErdosProblems/687.lean` (PR #6864). -/
+noncomputable def Y (x : ℕ) : ℕ :=
+  sSup {y : ℕ | Green46.IsCoveredByResidues x y}
+
+/-- `erdos_687.parts.ii` of PR #6864, from the Jacobsthal bound. -/
+theorem erdos_687.parts.ii_of_jacobsthal (hJ : JacobsthalIteratedLogStatement) :
+    (fun x : ℕ ↦ (Y x : ℝ)) =o[atTop] (fun x : ℕ ↦ (x : ℝ) ^ 2) := by
+  obtain ⟨h1, h2⟩ := Green46.improve_upper hJ
+  exact h2.trans_isLittleO h1
+
+end Erdos687
 
 /-! ## Instantiation with the OpenAI release's formal proofs
 
@@ -325,28 +311,20 @@ theorem green_46_improve_upper :
 
 /-! ## The formal-conjectures statements, unconditionally
 
-These are the declarations that the `formal_proof` links in formal-conjectures point to.
-Their names and statements match the repository's (`erdos_687.parts.i`,
-`erdos_687.variants.upper_iterated_log`, `green_46.improve_upper`). -/
-
-/-- formal-conjectures `Erdos687.erdos_687.parts.i`. -/
-theorem Erdos687.erdos_687.parts.i :
-    True ↔ Erdos687.Y =o[atTop] (fun x : ℕ ↦ (x : ℝ) ^ 2) :=
-  Erdos687.erdos_687.parts.i_of_jacobsthal jacobsthal_iterated_log
-
-/-- formal-conjectures `Erdos687.erdos_687.variants.upper_iterated_log`. -/
-theorem Erdos687.erdos_687.variants.upper_iterated_log :
-    Asymptotics.IsBigO atTop Erdos687.Y
-      (fun x : ℕ ↦ ((x : ℝ) + 1) ^ 2 / (Real.log (Real.log (3 * ((x : ℝ) + 1)))) ^ 2) :=
-  Erdos687.erdos_687.variants.upper_iterated_log_of_jacobsthal jacobsthal_iterated_log
+These are the declarations that `formal_proof` links in formal-conjectures point to. Their names
+and statements match the repository's: `green_46.improve_upper` (PR #7183) and
+`erdos_687.parts.ii` (PR #6864). -/
 
 /-- formal-conjectures `Green46.green_46.improve_upper`. -/
 theorem Green46.green_46.improve_upper :
-    let ans := ((fun x : ℕ ↦ ((x : ℝ) + 1) ^ 2 /
-      (Real.log (Real.log (3 * ((x : ℝ) + 1)))) ^ 2) : ℕ → ℝ)
-    (ans =o[atTop] Green46.bestUpper) ∧ (Asymptotics.IsBigO atTop Green46.maxY ans) :=
+    (Green46.green_46.improve_upper.answer =o[atTop] Green46.bestUpper) ∧
+      (Asymptotics.IsBigO atTop Green46.maxY Green46.green_46.improve_upper.answer) :=
   Green46.green_46.improve_upper_of_jacobsthal jacobsthal_iterated_log
 
-#print axioms Erdos687.erdos_687.parts.i
-#print axioms Erdos687.erdos_687.variants.upper_iterated_log
+/-- formal-conjectures `Erdos687.erdos_687.parts.ii` (PR #6864). -/
+theorem Erdos687.erdos_687.parts.ii :
+    (fun x : ℕ ↦ (Erdos687.Y x : ℝ)) =o[atTop] (fun x : ℕ ↦ (x : ℝ) ^ 2) :=
+  Erdos687.erdos_687.parts.ii_of_jacobsthal jacobsthal_iterated_log
+
 #print axioms Green46.green_46.improve_upper
+#print axioms Erdos687.erdos_687.parts.ii
